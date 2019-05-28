@@ -1,19 +1,28 @@
-namespace SafetyFirst.Numbers
+namespace rec SafetyFirst.Numbers
 
 /// <summary>
 /// An integer >= 0
 /// </summary>
 [<Struct>]
-type NaturalInt = private NaturalInt of int
+type NaturalInt = 
+  private | NaturalInt of int
+
+  member this.Value = let (NaturalInt value) = this in value
 
 [<Struct>]
-type NegativeInt = private NegativeInt of int
+type NegativeInt = 
+  private | NegativeInt of int
+
+  member this.Value = let (NegativeInt value) = this in value
 
 /// <summary>
 /// An integer > 0.  If you want to include 0, use <c>NaturalInt</c>
 /// </summary>
 [<Struct>]
-type PositiveInt = private PositiveInt of int
+type PositiveInt = 
+  private | PositiveInt of int
+
+  member this.Value = let (PositiveInt value) = this in value
 
 [<AutoOpen>]
 module NaturalIntMatchers = 
@@ -55,6 +64,8 @@ module NaturalInt =
     | Natural i -> i
     | i -> invalidArg "i" (sprintf "Assertion failed trying to create a NaturalInt: %i >= 0" i)
 
+  let value (natural:NaturalInt) = natural.Value
+
 module NegativeInt =  
   let verify = function
     | Negative i -> Some i
@@ -82,9 +93,9 @@ module NegativeInt =
     | Negative i -> i
     | i -> invalidArg "i" (sprintf "Assertion failed trying to create a NegativeInt: %i < 0" i)
 
-module PositiveInt = 
-  let private test i = i > 0
+  let value (negative:NegativeInt) = negative.Value
 
+module PositiveInt = 
   let verify = function 
     | Positive i -> Some i
     | _ -> None
@@ -108,4 +119,6 @@ module PositiveInt =
   let assume = function
     | Positive i -> i
     | i -> invalidArg "i" (sprintf "Assertion failed trying to create a PositiveInt: %i > 0" i)
+
+  let value (positive:PositiveInt) = positive.Value
     
